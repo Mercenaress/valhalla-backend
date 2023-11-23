@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "serverless-webpack": "^5.13.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.454.0",
+    "@aws-sdk/lib-dynamodb": "^3.454.0",
+    "nanoid": "^5.0.3"
+  }
+}

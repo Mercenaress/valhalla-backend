@@ -1,0 +1,91 @@
+service: valhalla-backend
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  profile: Tiny
+  region: eu-north-1
+  iam:
+    role: arn:aws:iam::401369141935:role/lambda-dynamo-apigateway
+
+plugins:
+  - serverless-webpack
+
+package: 
+  individually: true
+
+functions:
+  getMenuItems:
+    handler: functions/getMenuItems/index.handler
+    events: 
+      - httpApi:
+          path: '/api/menu'
+          method: GET
+  postMenuItems:
+    handler: functions/postMenuItems/index.handler
+    events: 
+      - httpApi:
+          path: '/api/menuItem'
+          method: POST 
+  updateMenuItems:
+    handler: functions/updateMenuItems/index.handler
+    events: 
+      - httpApi:
+          path: '/api/menuItem/{menuItemId}'
+          method: PUT 
+  deleteMenuItems:
+    handler: functions/deleteMenuItems/index.handler
+    events: 
+      - httpApi:
+          path: '/api/menuItem/{menuItemId}'
+          method: DELETE 
+  getOrders:
+    handler: functions/getOrders/index.handler
+    events: 
+      - httpApi:
+          path: '/api/orders'
+          method: GET
+  postOrders:
+    handler: functions/postOrders/index.handler
+    events: 
+      - httpApi:
+          path: '/api/order'
+          method: POST
+  updateOrders:
+    handler: functions/updateOrders/index.handler
+    events: 
+      - httpApi:
+          path: '/api/order/{orderId}'
+          method: PUT
+  deleteOrders:
+    handler: functions/deleteOrders/index.handler
+    events: 
+      - httpApi:
+          path: '/api/order/{orderId}'
+          method: DELETE
+
+resources:
+  Resources:
+    menuDb:
+      Type: AWS::DynamoDB::Table
+      Properties: 
+        TableName: menu-db
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    orderDb:
+      Type: AWS::DynamoDB::Table
+      Properties: 
+        TableName: order-db
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
