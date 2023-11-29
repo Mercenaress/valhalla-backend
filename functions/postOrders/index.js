@@ -14,12 +14,12 @@ exports.handler = async (event) => {
     try {
       const id = nanoid();
       const currentTime = new Date();
-      const date = currentTime.getFullYear()+'-'+(currentTime.getMonth()+1)+'-'+currentTime.getDate();
-      const time = currentTime.getHours()+':'+currentTime.getMinutes();
-      const orderDate = date+' '+time;
+      const orderDate = currentTime.toISOString();
+      
+      
       const putCommand = new PutCommand({
         TableName: "order-db",
-        Order: {
+        Item: {
             id: id,
             orderDate: orderDate,
             progress: progress,
