@@ -16,11 +16,16 @@ exports.handler = async (event) => {
       const currentTime = new Date();
       const orderDate = currentTime.toISOString();
       
-      // Stoppa in items.addons.price också 
       let totalSum = 0;
-      for(var i = 0; i< items.length; i++){
-        totalSum = totalSum + items[i].price;
+      let addOnSum = 0;
+      for(var i = 0; i < items.length; i++){
+        totalSum = totalSum + items[i].price * items[i].quantity;
+        for(var j = 0; j < items[i].addOns.length; j++){
+          addOnSum = addOnSum + items[i].addOns[j].price * items[i].quantity;
+        }
       }
+
+      let priceTotal = totalSum + addOnSum;
 
       const putCommand = new PutCommand({
         TableName: "order-db",
@@ -29,7 +34,7 @@ exports.handler = async (event) => {
             orderDate: orderDate,
             progress: progress,
             items: items,
-            priceTotal: totalSum,
+            priceTotal: priceTotal,
             orderComment: orderComment,
             customerInfo: customerInfo
         },
