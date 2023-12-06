@@ -9,7 +9,7 @@ const docClient = DynamoDBDocumentClient.from(dbClient);
 
 exports.handler = async (event) => {
 
-    const { progress, items, orderComment, customerInfo } = JSON.parse(event.body);
+    const { items, orderComment, customerInfo } = JSON.parse(event.body);
   
     try {
       const id = nanoid();
@@ -26,7 +26,7 @@ exports.handler = async (event) => {
         Item: {
             id: id,
             orderDate: orderDate,
-            progress: progress,
+            progress: 'Pending',
             items: items,
             priceTotal: totalSum,
             orderComment: orderComment,
