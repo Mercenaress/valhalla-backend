@@ -9,7 +9,7 @@ const docClient = DynamoDBDocumentClient.from(dbClient);
 
 exports.handler = async (event) => {
 
-    const { items, orderComment, customerInfo } = JSON.parse(event.body);
+    const { items, orderComment, customerInfo, orderNumber } = JSON.parse(event.body);
   
     try {
       const id = nanoid();
@@ -25,6 +25,7 @@ exports.handler = async (event) => {
         TableName: "order-db",
         Item: {
             id: id,
+            orderNumber: orderNumber,
             orderDate: orderDate,
             progress: 'Pending',
             items: items,
