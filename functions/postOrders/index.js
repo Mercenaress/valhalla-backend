@@ -9,7 +9,7 @@ const docClient = DynamoDBDocumentClient.from(dbClient);
 
 exports.handler = async (event) => {
 
-    const { progress, items, orderComment, customerInfo } = JSON.parse(event.body);
+    const { items, orderComment, customerInfo, orderNumber } = JSON.parse(event.body);
   
     try {
       const id = nanoid();
@@ -17,24 +17,19 @@ exports.handler = async (event) => {
       const orderDate = currentTime.toISOString();
       
       let totalSum = 0;
-      let addOnSum = 0;
       for(var i = 0; i < items.length; i++){
         totalSum = totalSum + items[i].price * items[i].quantity;
-        for(var j = 0; j < items[i].addOns.length; j++){
-          addOnSum = addOnSum + items[i].addOns[j].price * items[i].quantity;
-        }
       }
-
-      let priceTotal = totalSum + addOnSum;
 
       const putCommand = new PutCommand({
         TableName: "order-db",
         Item: {
             id: id,
+            orderNumber: orderNumber,
             orderDate: orderDate,
-            progress: progress,
+            progress: 'Pending',
             items: items,
-            priceTotal: priceTotal,
+            priceTotal: totalSum,
             orderComment: orderComment,
             customerInfo: customerInfo
         },
