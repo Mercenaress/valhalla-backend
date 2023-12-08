@@ -8,23 +8,35 @@ const docClient = DynamoDBDocumentClient.from(client);
 
 exports.handler = async (event) => {
     const { orderNumber } = JSON.parse(event.body);
+    console.log(orderNumber);
 
-    const queryCommand = new QueryCommand({
-        TableName: "order-db",
-        IndexName: "orderNumber-gsi",
-        KeyConditionExpression: "orderNumber = :orderNumber",
-        ExpressionAttributeValues: {
-            ":orderNumber": orderNumber
-        }
-    });
-    const response = await docClient.send(queryCommand);
-    return {
-        statusCode: 200,
-        body: JSON.stringify(
-            {
-                message: "Success!",
-                response: response.Items
+    try {
+        const queryCommand = new QueryCommand({
+            TableName: "order-db",
+            IndexName: "orderNumber-gsi",
+            KeyConditionExpression: "orderNumber = :orderNumber",
+            ExpressionAttributeValues: {
+                ":orderNumber": orderNumber
             }
-        )
+        });
+        const response = await docClient.send(queryCommand);
+        return {
+            statusCode: 200,
+            body: JSON.stringify(
+                {
+                    message: "Success!",
+                    response: response.Items
+                }
+            )
+        }
+    } catch (err) {
+        return {
+            statusCode: err.statusCode,
+            body: JSON.stringify(
+                {
+                    message: err.message
+                }
+            )
+        }
     }
 };
