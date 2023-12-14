@@ -64,6 +64,12 @@ functions:
       - httpApi:
           path: '/api/order/{orderId}'
           method: DELETE
+  getOrderByOrderNumber:
+    handler: functions/getOrderByOrderNumber/index.handler
+    events: 
+      - httpApi:
+          path: '/api/orders/order'
+          method: POST
 
 resources:
   Resources:
@@ -85,7 +91,16 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: orderNumber
+            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: orderNumber-gsi
+            KeySchema:
+              - AttributeName: orderNumber
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL 
         BillingMode: PAY_PER_REQUEST
